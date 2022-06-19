@@ -1,0 +1,18 @@
+counter = 1
+
+
+def gen_numbers(counter):
+    if counter % 3 != 0:
+        yield counter
+    elif counter % 3 == 0:
+        yield 'Vasilii'
+    counter += 1
+    
+
+get_num = gen_numbers(counter)
+print(next(get_num))
+
+
+
+
+
