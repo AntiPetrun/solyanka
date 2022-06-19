@@ -129,10 +129,11 @@ counter = 0
 while True:
     def lights():
         if counter %2 == 0:
-            return datetime.now().strftime("%H:%M:%S")
+            yield datetime.now().strftime("%H:%M:%S")
         elif counter %2 == 1:
-            return datetime.now().strftime("%H;%M;%S")
+            yield datetime.now().strftime("%H;%M;%S")
     ct = lights()
+    ct = next(ct)
     clock = [dct[x] for x in ct if x in dct.keys()]
     print(clock[0][0] + clock[1][0] + clock[2][0] + clock[3][0] + clock[4][0] + clock[5][0] + clock[6][0] + clock[7][0])
     print(clock[0][1] + clock[1][1] + clock[2][1] + clock[3][1] + clock[4][1] + clock[5][1] + clock[6][1] + clock[7][1])
