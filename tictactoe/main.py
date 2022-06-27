@@ -3,12 +3,12 @@ import os
 from string import digits
 from unicodedata import digit
 from game_stat import data
+import time
 
 the_board = [i for i in range(1, 10)]
-menu_answer = {'1': 'statistic', '2': 'playgame'}
+menu_answer = {'1': 'statistic', '2': 'playgame', '3': 'exit'}
 is_the_user_x = True
 TURNS = {True: 'X', False: 'O'}
-
 
 
 def get_answer():
@@ -21,7 +21,8 @@ def show_menu():
     print(
     '___MENU___\n',
     '1. Show statistic\n',
-    '2. Play the game\n'
+    '2. Play the game\n',
+    '3. Exit\n'
     )
     answer = get_answer()
     while not answer:
@@ -43,6 +44,11 @@ def show_statistic():
     with open('game_stat', 'r+') as f:
         for line in f:
             print(line)
+
+
+def exit():
+    while True:
+        break
 
 
 def get_user_turn():
@@ -86,41 +92,46 @@ def check_draw():
     return True
 
 
+def display_result():
+    global the_board
+    os.system('clear')
+    if win is True:
+        print(f'User {TURNS.get(not is_the_user_x)} has WON!\nPlease wait few second to enter MENU')
+    elif draw is True:
+        print('Your result is DRAW\nPlease wait few second to enter MENU')
+    time.sleep(5)
+    the_board = [i for i in range(1, 10)]
+    main()
+
+
 def play_the_game():
     print('Playing the game')
     show_the_board()
-    
+    global win, draw
     while True:
         turn = get_user_turn()
         show_the_board()
-        
         win = check_win()
         if win is True:
-            if TURNS.get(not is_the_user_x) in data.keys():
-                data[TURNS.get(not is_the_user_x)] += 1
-                print(f'User {TURNS.get(not is_the_user_x)} has WON!')
-                with open('game_stat.py', 'a+') as file:
-                    file.write(f'{data}')
-                break
-        
+            show_result = display_result()
+            break
         draw = check_draw()
         if draw is False:
             continue
         elif draw is True:
-            if 'draw' in data.keys():
-                data['draw'] += 1
-                print('Your result is DRAW')
-                with open('game_stat.py', 'a+') as file:
-                    file.write(f'{data}')
-                break
+            show_result = display_result()
+            break
 
 
 def main():
     answer = show_menu()
     if answer == 'statistic':
         show_statistic()
-    else:
+    elif answer == 'playgame':
         play_the_game()
+    else:
+        exit()
+        
 
 if __name__ == '__main__':
     main()
