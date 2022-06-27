@@ -44,6 +44,7 @@ def show_statistic():
         file.seek(0)
         for line in file:
             print(line)
+    print('Please wait few second to enter MENU')
     time.sleep(5)
     main()
 
@@ -98,9 +99,19 @@ def display_result():
     global the_board
     os.system('clear')
     if win is True:
-        print(f'User {TURNS.get(not is_the_user_x)} has WON!\nPlease wait few second to enter MENU')
+        with open('game_stat.py', 'r') as file:
+            for key in data.items():
+                if key == TURNS.get(not is_the_user_x) == 'X':
+                    data[key] += 1
+        print(f'User {TURNS.get(not is_the_user_x)} has WON!\n')
+        print('Please wait few second to enter MENU')
     elif draw is True:
-        print('Your result is DRAW\nPlease wait few second to enter MENU')
+        with open('game_stat.py', 'a+') as file:
+            for key in data.keys():
+                if key == 'draw':
+                    data[key] += 1
+        print('Your result is DRAW\n')
+        print('Please wait few second to enter MENU')
     time.sleep(5)
     the_board = [i for i in range(1, 10)]
     main()
