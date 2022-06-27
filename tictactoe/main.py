@@ -1,7 +1,5 @@
-from operator import is_
 import os
 from string import digits
-from unicodedata import digit
 from game_stat import data
 import time
 
@@ -41,9 +39,13 @@ def show_the_board():
 
 
 def show_statistic():
-    with open('game_stat', 'r+') as f:
-        for line in f:
+    os.system('clear')
+    with open('game_stat.py', 'r') as file:
+        file.seek(0)
+        for line in file:
             print(line)
+    time.sleep(5)
+    main()
 
 
 def exit():
