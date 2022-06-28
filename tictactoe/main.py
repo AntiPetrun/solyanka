@@ -1,12 +1,13 @@
 import os
 from string import digits
-from game_stat import data
+import pickle
 import time
 
 the_board = [i for i in range(1, 10)]
 menu_answer = {'1': 'statistic', '2': 'playgame', '3': 'exit'}
 is_the_user_x = True
 TURNS = {True: 'X', False: 'O'}
+DATA = {'X': 0, 'O': 0, 'draw': 0}
 
 
 def get_answer():
@@ -39,12 +40,11 @@ def show_the_board():
 
 
 def show_statistic():
+    global DATA
     os.system('clear')
-    with open('game_stat.py', 'r') as file:
-        file.seek(0)
-        for line in file:
-            print(line)
-    print('Please wait few second to enter MENU')
+    upgrade_data_before_start_the_game()
+    print(DATA)
+    print('\nPlease wait few second to enter MENU')
     time.sleep(5)
     main()
 
@@ -95,23 +95,28 @@ def check_draw():
     return True
 
 
+def collect_statistic():
+    with open('game_stat.txt', 'wb') as file:
+        collector = file.write(pickle.dumps(DATA))
+    return collector
+
+
 def display_result():
-    global the_board
+    global the_board, collector
     os.system('clear')
     if win is True:
-        with open('game_stat.py', 'r') as file:
-            for key in data.items():
-                if key == TURNS.get(not is_the_user_x) == 'X':
-                    data[key] += 1
         print(f'User {TURNS.get(not is_the_user_x)} has WON!\n')
         print('Please wait few second to enter MENU')
+        for key in DATA.keys():
+            if key == TURNS.get(not is_the_user_x):
+                DATA[key] += 1
     elif draw is True:
-        with open('game_stat.py', 'a+') as file:
-            for key in data.keys():
-                if key == 'draw':
-                    data[key] += 1
         print('Your result is DRAW\n')
         print('Please wait few second to enter MENU')
+        for key in DATA.keys():
+            if key == 'draw':
+                DATA[key] += 1
+    collector = collect_statistic()
     time.sleep(5)
     the_board = [i for i in range(1, 10)]
     main()
@@ -136,7 +141,23 @@ def play_the_game():
             break
 
 
+def upgrade_data_before_start_the_game():
+    with open('game_stat.txt', 'rb') as file:
+        file.seek(0)
+        DATA = pickle.loads(file.read())
+    return DATA
+
+
+def upgrade_data_before_start_the_game():
+    with open('game_stat.txt', 'rb') as file:
+        file.seek(0)
+        DATA = pickle.loads(file.read())
+    return DATA
+
+
 def main():
+    global DATA
+    DATA = upgrade_data_before_start_the_game()
     answer = show_menu()
     if answer == 'statistic':
         show_statistic()
